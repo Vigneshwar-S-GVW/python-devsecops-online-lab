@@ -58,8 +58,10 @@ jobs:
         with:
           config: p/default
           
-      - name: Dependency Review
-        uses: actions/dependency-review-action@v4
+      - name: Safety Scan
+        run: |
+            pip install safety
+            safety check
 
       - name: Run Unit Tests
         run: |
