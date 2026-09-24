@@ -38,7 +38,7 @@ def read_root() -> dict[str, str]:
 @app.get("/health")
 def health_check() -> dict[str, str]:
     return {
-        "status": "health",
+        "status": "healthm",
     }
 
 
