@@ -7,6 +7,7 @@ on:
 
 permissions:
   contents: read
+  security-events: write
 
 concurrency:
   group: pr-${{ github.event.pull_request.number }}
@@ -20,10 +21,10 @@ jobs:
 
     steps:
       - name: Check out repository
-        uses: actions/checkout@v6
+        uses: actions/checkout@v4
 
       - name: Set up Python
-        uses: actions/setup-python@v6
+        uses: actions/setup-python@v5
         with:
           python-version: "3.12"
           cache: pip
@@ -46,5 +47,18 @@ jobs:
       - name: Run Python linting
         run: ruff check .
 
+      - name: Run Semgrep SAST
+        uses: returntocorp/semgrep-action@v1
+        with:
+          config: p/default
+
+      - name: Run Gitleaks Secret Scan
+        uses: gitleaks/gitleaks-action@v2
+
       - name: Run unit tests with coverage
-        run: pytest --cov=. --cov-report=term-missing
+        run: |
+          pytest --cov=. --cov-report=term-missing
+
+      - name: Build validation
+        run: |
+          python -m compileall .
